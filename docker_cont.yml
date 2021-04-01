@@ -1,0 +1,59 @@
+- hosts: localhost
+  vars_files:
+    - variable.yml
+  tasks:
+
+    - name: "configuring yum for docker"
+      yum_repository:
+        name: "docker_file"
+        baseurl: 'https://download.docker.com/linux/centos/7/x86_64/stable/'
+        gpgcheck: no
+        description: "docker repository"
+
+        #    - name: 'install docker'
+        #package:
+        #name: 'docker'
+        #state: present
+
+    - name: 'install python36'
+      package:
+        name: 'python36'
+        state: present
+  
+    - name: 'pip install requests'
+      pip:
+        name: 'requests'
+
+    - name: 'pull yash202000/ssh:v1'
+      docker_image:
+        name: 'yash202000/ssh:v1'
+        state: present
+
+    - name: "launching container"
+      docker_container:
+        name: os
+        image: yash202000/ssh:v1
+        state: started
+        detach: yes
+        interactive: yes
+        tty: yes
+        exposed_ports:
+          - '{{ exposed_port }}'
+        ports:
+          - '{{ sys_port }}:{{ exposed_port }}'
+      register: x
+
+    - name: debug
+      debug:
+        var: x
+
+    - name: adding entry
+      blockinfile:
+        path: "{{ inventory }}"
+        block: |
+                [docker]
+                {{ x['container']['NetworkSettings']['IPAddress'] }} ansible_user=root ansible_ssh_pass=redhat ansible_connection=ssh
+
+    - name: refreshing entry
+      command: "ssh-keygen -R {{ x['container']['NetworkSettings']['IPAddress'] }}"
+
