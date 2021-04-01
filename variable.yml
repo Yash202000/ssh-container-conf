@@ -1,0 +1,3 @@
+sys_port: 8080
+exposed_port: 80
+inventory: ip.txt
