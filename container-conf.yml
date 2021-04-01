@@ -1,0 +1,30 @@
+- hosts: all
+  tasks:
+          - name: 'install webserver'
+            package:
+                    name: "{{ item }}"
+                    state: present
+            loop: ['httpd','php']
+
+                      
+          - copy:
+                  src: index.html
+                  dest: /var/www/html/index.html
+
+          - name: 'start service'
+            command: '/usr/sbin/httpd'
+
+          - name: 'enable service'
+            command: 'echo /usr/sbin/httpd >> /root/.bashrc'
+
+  
+    
+
+
+
+
+
+
+
+
+
