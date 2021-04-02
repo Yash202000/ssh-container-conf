@@ -7,6 +7,10 @@
       package:
         name: 'docker'
         state: present
+        
+    - name: 'start service'
+        name: docker
+        state: started
 
     - name: 'install python36'
       package:
