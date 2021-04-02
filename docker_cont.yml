@@ -2,18 +2,11 @@
   vars_files:
     - variable.yml
   tasks:
-
-    - name: "configuring yum for docker"
-      yum_repository:
-        name: "docker_file"
-        baseurl: 'https://download.docker.com/linux/centos/7/x86_64/stable/'
-        gpgcheck: no
-        description: "docker repository"
-
-        #    - name: 'install docker'
-        #package:
-        #name: 'docker'
-        #state: present
+   
+    - name: 'install docker'
+      package:
+        name: 'docker'
+        state: present
 
     - name: 'install python36'
       package:
